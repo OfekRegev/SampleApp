@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">SampleApp</string>
-    <string name="articles_title_text">Articles</string>
+    <string name="articles_text">Articles</string>
+    <string name="open_articles">Open Articles</string>
+    <string name="open_stories">Open Stories</string>
+    <string name="open_favorites">Open Favorites</string>
+    <string name="stories_text">Stories</string>
+    <string name="favorites_text">Favorites</string>
 </resources>

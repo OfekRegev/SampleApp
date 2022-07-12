@@ -12,6 +12,7 @@ import com.ofek.sample.ui.themes.textLightColor
 class ToolbarColors(
     val toolbarTitleTextColor: Color,
     val toolbarBackgroundColor: Color,
+    val toolbarButtonColor: Color,
 )
 
 
@@ -21,10 +22,12 @@ val LocalToolbarColors = compositionLocalOf {
 
 val lightToolbarColors = ToolbarColors(
     toolbarTitleTextColor = textLightColor,
-    toolbarBackgroundColor = primaryLightColor
+    toolbarBackgroundColor = primaryLightColor,
+    toolbarButtonColor = textLightColor,
 )
 
 val darkToolbarColors = ToolbarColors(
     toolbarTitleTextColor = textDarkColor,
-    toolbarBackgroundColor = primaryDarkColor
+    toolbarBackgroundColor = primaryDarkColor,
+    toolbarButtonColor = textLightColor,
 )

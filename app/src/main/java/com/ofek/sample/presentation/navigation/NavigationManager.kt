@@ -6,7 +6,7 @@ interface NavigationManager {
 
     fun navigationPathState() : Flow<String?>
 
-    fun navigateNext(destination: Destination)
+    fun navigateTo(destination: Destination)
 
     fun goBack()
 

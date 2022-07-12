@@ -15,12 +15,15 @@ class Navigator : NavigationManager {
     override fun navigationPathState(): Flow<String?> = channel
 
     // navigate to the destination by adding the destination route to the current destination route
-    override fun navigateNext(
+    override fun navigateTo(
         destination: Destination
     ) {
-        channel.tryEmit(
-            buildPath(channel.value, destination)
-        )
+        val newPath = buildPath(channel.value, destination)
+        if (newPath != channel.value) {
+            channel.tryEmit(
+                newPath
+            )
+        }
     }
 
     // navigate back by dropping the last route in the path
@@ -46,28 +49,33 @@ class Navigator : NavigationManager {
     private fun buildPath(
         currentPath: String?,
         destination: Destination
-    ): String? {
-        return currentPath?.let {
-            val newPathBuilder = StringBuilder(currentPath)
-            // when current path is nor null or empty a '/' should be appended following the compose navigation scheme
-            if (currentPath.isNullOrEmpty().not()) {
-                newPathBuilder.append('/')
+    ): String {
+        val pathSplit = currentPath.orEmpty().split('/')
+        val newPathBuilder = StringBuilder()
+        destination.ancestorRoutes.forEachIndexed { index, ancestor ->
+            // preferably using the ancestor from the current path if it exists
+            if (index < pathSplit.size && pathSplit[index].startsWith(ancestor)) {
+                newPathBuilder.append(pathSplit[index])
+            } else {
+                // whenever it does not exist, the default ancestor is added and will have default values for arguments(empty arguments)
+                newPathBuilder.append(ancestor)
             }
-            newPathBuilder.append(destination.route)
-            if (destination.arguments.isNotEmpty()) {
-                newPathBuilder.append("?")
-                val arguments = destination.arguments.entries
-                // adding arguments to the current route
-                arguments.forEachIndexed { index, argument ->
-                    newPathBuilder.append("${argument.key}=${argument.value}")
-                    // following the compose navigation scheme the last argument should not be escaped with '&'
-                    if (index < arguments.size - 1) {
-                        newPathBuilder.append("&")
-                    }
+            newPathBuilder.append('/')
+        }
+        newPathBuilder.append(destination.route)
+        if (destination.arguments.isNotEmpty()) {
+            newPathBuilder.append("?")
+            val arguments = destination.arguments.entries
+            // adding arguments to the current route
+            arguments.forEachIndexed { index, argument ->
+                newPathBuilder.append("${argument.key}=${argument.value}")
+                // following the compose navigation scheme the last argument should not be escaped with '&'
+                if (index < arguments.size - 1) {
+                    newPathBuilder.append("&")
                 }
             }
-            newPathBuilder.toString()
         }
+        return newPathBuilder.toString()
     }
 
     /**
@@ -76,8 +84,9 @@ class Navigator : NavigationManager {
      */
     override fun isCurrentDestination(path: String, destination: Destination): Boolean {
         val pathSplit = path.split('/')
+        // root destination would not have ancestors
         // path could start with root destination even when it's not the current destination, i.e rootdestination/otherdestination.
-        return if (pathSplit.size <= 1 && destination.rootDestination) {
+        return if (pathSplit.size <= 1 && destination.ancestorRoutes.isEmpty()) {
             path.startsWith(destination.route)
         } else {
             val lastRoute = pathSplit.lastOrNull()

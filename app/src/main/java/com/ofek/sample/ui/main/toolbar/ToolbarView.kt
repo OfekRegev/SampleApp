@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,7 +46,18 @@ fun ToolbarView(
                     style = ToolbarTheme.typography.toolbarTitleTextStyle,
                     color = ToolbarTheme.colors.toolbarTitleTextColor
                 )
-
+                Spacer(modifier = Modifier.width(Sizes.TOOLBAR_TITLE_SPACING.dp))
+                // end buttons
+                Row(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    toolbarState.endButtons.forEach {
+                        ToolbarButton(toolbarButtonModel = it)
+                    }
+                }
             }
         }
     }
@@ -61,11 +73,13 @@ private fun ToolbarButton(
         modifier = Modifier
             .fillMaxHeight()
             .aspectRatio(1f)
+            .padding(Sizes.TOOLBAR_BUTTON_ICON_PADING.dp)
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = null
             ) {
                 toolbarButtonModel.onClick.invoke()
-            }
+            },
+        colorFilter = ColorFilter.tint(ToolbarTheme.colors.toolbarButtonColor)
     )
 }

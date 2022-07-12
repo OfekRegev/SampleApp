@@ -15,7 +15,7 @@ fun ToolbarTheme(
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
-        LocalToolbarColors provides if (darkMode) lightToolbarColors else darkToolbarColors,
+        LocalToolbarColors provides if (darkMode) darkToolbarColors else lightToolbarColors,
         content = content,
     )
 }

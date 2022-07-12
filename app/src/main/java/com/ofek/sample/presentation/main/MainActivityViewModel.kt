@@ -7,11 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.ofek.sample.R
 import com.ofek.sample.presentation.common.ResourceProvider
 import com.ofek.sample.presentation.common.ViewModelDispatchers
+import com.ofek.sample.presentation.main.bottombar.BottomBarButtonModel
+import com.ofek.sample.presentation.main.bottombar.BottomBarState
 import com.ofek.sample.presentation.main.toolbar.ToolbarState
 import com.ofek.sample.presentation.main.toolbar.backToolbarButtonModel
-import com.ofek.sample.presentation.navigation.ArticlesDestination
-import com.ofek.sample.presentation.navigation.NavigationManager
-import com.ofek.sample.presentation.navigation.OnBoardingDestination
+import com.ofek.sample.presentation.navigation.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -20,25 +20,32 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val navigationUseCase: NavigationManager,
+    private val navigationManager: NavigationManager,
     private val resourcesProvider: ResourceProvider,
     private val viewModelDispatchers: ViewModelDispatchers,
 ) : ViewModel() {
 
     init {
-        navigationUseCase.navigationPathState()
+        navigationManager.navigationPathState()
             .onEach { newPath ->
                 updateToolbarState(newPath)
+                updateBottomBarState(newPath)
                 onNavigationPathChanged(newPath)
-            }.launchIn(viewModelScope)
+            }
+            .launchIn(viewModelScope)
+        viewModelScope.launch(viewModelDispatchers.asyncComputationDispatcher) {
+            navigateToDestination(OnBoardingDestination())
+        }
     }
 
     private val _toolbarState: MutableLiveData<ToolbarState?> = MutableLiveData(null)
+    private val _bottomBarState: MutableLiveData<BottomBarState?> = MutableLiveData(null)
     private val _navigationPath: MutableLiveData<String?> = MutableLiveData(null)
 
 
-    fun getToolbarState() : LiveData<ToolbarState?> = _toolbarState
+    fun getToolbarState(): LiveData<ToolbarState?> = _toolbarState
     fun getNavigationPath(): LiveData<String?> = _navigationPath
+    fun getBottomBarState(): LiveData<BottomBarState?> = _bottomBarState
 
     private fun onNavigationPathChanged(newPath: String?) {
         viewModelScope.launch(context = viewModelDispatchers.mainDispatcher) {
@@ -47,13 +54,39 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun updateToolbarState(currentPath: String?) {
-        val pathSplit = currentPath.orEmpty().split('/')
-        val lastRoute = pathSplit.last()
         val toolbarState = when {
-            lastRoute.startsWith(ArticlesDestination.NAVIGATION_ROUTE) -> {
+            navigationManager.isCurrentDestination(
+                currentPath.orEmpty(),
+                ArticlesDestination()
+            ) -> {
                 ToolbarState(
-                    titleResId = R.string.articles_title_text,
-                    endButtons = listOf(
+                    titleResId = R.string.articles_text,
+                    startButtons = listOf(
+                        backToolbarButtonModel(
+                            resourcesProvider.isSystemInDarkMode(),
+                            ::onBackAction
+                        )
+                    )
+                )
+            }
+            navigationManager.isCurrentDestination(currentPath.orEmpty(), StoriesDestination()) -> {
+                ToolbarState(
+                    titleResId = R.string.stories_text,
+                    startButtons = listOf(
+                        backToolbarButtonModel(
+                            resourcesProvider.isSystemInDarkMode(),
+                            ::onBackAction
+                        )
+                    )
+                )
+            }
+            navigationManager.isCurrentDestination(
+                currentPath.orEmpty(),
+                FavoritesDestination()
+            ) -> {
+                ToolbarState(
+                    titleResId = R.string.favorites_text,
+                    startButtons = listOf(
                         backToolbarButtonModel(
                             resourcesProvider.isSystemInDarkMode(),
                             ::onBackAction
@@ -70,17 +103,66 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun onBackAction() {
-        viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
-            navigationUseCase.goBack()
+    private fun updateBottomBarState(newPath: String?) {
+        if (newPath == null) {
+            return
+        }
+        if (navigationManager.isCurrentDestination(
+                newPath,
+                OnBoardingDestination()
+            )
+        ) {
+            _bottomBarState.value = null
+        } else {
+            val articlesButtonModel = BottomBarButtonModel(
+                textResId = R.string.articles_text,
+                iconResId = R.drawable.icon_articles,
+                selected = navigationManager.isCurrentDestination(
+                    newPath.orEmpty(),
+                    ArticlesDestination()
+                ),
+                destination = ArticlesDestination(),
+                onClick = ::navigateToDestination
+            )
+            val storiesButtonModel = BottomBarButtonModel(
+                textResId = R.string.stories_text,
+                iconResId = R.drawable.icon_stories,
+                selected = navigationManager.isCurrentDestination(
+                    newPath.orEmpty(),
+                    StoriesDestination()
+                ),
+                destination = StoriesDestination(),
+                onClick = ::navigateToDestination
+            )
+            val favoritesButtonModel = BottomBarButtonModel(
+                textResId = R.string.favorites_text,
+                iconResId = R.drawable.icon_favorites,
+                selected = navigationManager.isCurrentDestination(
+                    newPath.orEmpty(),
+                    FavoritesDestination()
+                ),
+                destination = FavoritesDestination(),
+                onClick = ::navigateToDestination
+            )
+            _bottomBarState.value = BottomBarState(
+                articlesButtonModel = articlesButtonModel,
+                storiesButtonModel = storiesButtonModel,
+                favoritesButtonModel = favoritesButtonModel,
+            )
         }
     }
 
-    fun navigateToFirstScreen() {
+    private fun navigateToDestination(destination: Destination) {
         viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
-            navigationUseCase.navigateNext(
-                OnBoardingDestination()
+            navigationManager.navigateTo(
+                destination
             )
+        }
+    }
+
+    fun onBackAction() {
+        viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
+            navigationManager.goBack()
         }
     }
 
