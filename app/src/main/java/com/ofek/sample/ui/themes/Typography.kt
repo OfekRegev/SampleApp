@@ -1,4 +1,4 @@
-package com.ofek.sample.ui.main.theme
+package com.ofek.sample.ui.themes
 
 import android.graphics.Typeface
 import androidx.compose.ui.text.TextStyle

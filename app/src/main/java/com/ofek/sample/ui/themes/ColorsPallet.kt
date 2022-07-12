@@ -1,4 +1,4 @@
-package com.ofek.sample.ui.main.theme
+package com.ofek.sample.ui.themes
 
 import androidx.compose.ui.graphics.Color
 
@@ -6,5 +6,5 @@ import androidx.compose.ui.graphics.Color
 val white = Color.White
 val black = Color.Black
 val dividerColor = Color.LightGray
-val primaryLightColor = Color.Blue
-val primaryDarkColor = Color.Green
+val primaryLightColor = Color.Green
+val primaryDarkColor = Color.Blue

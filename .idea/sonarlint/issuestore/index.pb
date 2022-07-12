@@ -1,6 +1,4 @@
 
-X
-(app/src/main/java/com/ofek/sample/App.kt,e/a/ead68bb4edd5ec51529e3a5e19ae11a5f43678ff
 s
 Capp/src/main/java/com/ofek/sample/domain/base/BaseSuspendUseCase.kt,8/2/824fab1ab25a89b6cbd712442c22f231c346effb
 l
