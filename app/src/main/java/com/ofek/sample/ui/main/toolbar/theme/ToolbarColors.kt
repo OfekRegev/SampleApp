@@ -29,5 +29,5 @@ val lightToolbarColors = ToolbarColors(
 val darkToolbarColors = ToolbarColors(
     toolbarTitleTextColor = textDarkColor,
     toolbarBackgroundColor = primaryDarkColor,
-    toolbarButtonColor = textLightColor,
+    toolbarButtonColor = textDarkColor,
 )

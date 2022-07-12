@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -66,63 +67,71 @@ fun MainActivityRootView(
             scaffoldState = rememberScaffoldState(),
             topBar = { ToolbarView(toolbarState.value) },
             bottomBar = { BottomBarView(bottomBarState = bottomBarState.value) },
-            modifier = Modifier.background(MainTheme.colors.backgroundColor),
         ) { paddingValues ->
-            NavHost(
-                navController = navController,
-                startDestination = OnBoardingDestination().route,
-                modifier = Modifier.padding(paddingValues)
+            Box(
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .background(MainTheme.colors.backgroundColor)
             ) {
-                composable(
-                    route = OnBoardingDestination.DECLARATION_ROUTE
+                NavHost(
+                    navController = navController,
+                    startDestination = OnBoardingDestination().route,
+                    modifier = Modifier
+                        .padding(paddingValues)
                 ) {
-                    CompositionLocalProvider(
-                        LocalViewModelStoreOwner provides viewModelStoreOwner
+                    composable(
+                        route = OnBoardingDestination.DECLARATION_ROUTE
                     ) {
-                        OnBoardingRootView()
+                        CompositionLocalProvider(
+                            LocalViewModelStoreOwner provides viewModelStoreOwner
+                        ) {
+                            OnBoardingRootView()
+                        }
                     }
-                }
 
-                composable(
-                    route = ArticlesDestination.DECLARATION_ROUTE
-                ) {
-                    CompositionLocalProvider(
-                        LocalViewModelStoreOwner provides viewModelStoreOwner
+                    composable(
+                        route = ArticlesDestination.DECLARATION_ROUTE
                     ) {
-                        Box(
-                            modifier = Modifier.fillMaxHeight(
+                        CompositionLocalProvider(
+                            LocalViewModelStoreOwner provides viewModelStoreOwner
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxHeight(
 
+                                )
                             )
-                        )
+                        }
                     }
-                }
-                composable(
-                    route = StoriesDestination.DECLARATION_ROUTE
-                ) {
-                    CompositionLocalProvider(
-                        LocalViewModelStoreOwner provides viewModelStoreOwner
+                    composable(
+                        route = StoriesDestination.DECLARATION_ROUTE
                     ) {
-                        Box(
-                            modifier = Modifier.fillMaxHeight(
+                        CompositionLocalProvider(
+                            LocalViewModelStoreOwner provides viewModelStoreOwner
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxHeight(
 
+                                )
                             )
-                        )
+                        }
                     }
-                }
-                composable(
-                    route = FavoritesDestination.DECLARATION_ROUTE
-                ) {
-                    CompositionLocalProvider(
-                        LocalViewModelStoreOwner provides viewModelStoreOwner
+                    composable(
+                        route = FavoritesDestination.DECLARATION_ROUTE
                     ) {
-                        Box(
-                            modifier = Modifier.fillMaxHeight(
+                        CompositionLocalProvider(
+                            LocalViewModelStoreOwner provides viewModelStoreOwner
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxHeight(
 
+                                )
                             )
-                        )
+                        }
                     }
-                }
 
+                }
             }
         }
     }

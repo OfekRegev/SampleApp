@@ -9,15 +9,19 @@ class ToolbarButtonModel(
 )
 
 fun backToolbarButtonModel(
-    darkMode: Boolean,
     onClick: () -> Unit,
 ): ToolbarButtonModel {
     return ToolbarButtonModel(
-        drawable = if (darkMode) {
-            R.drawable.arrow_back_dark
-        } else {
-            R.drawable.back_arrow_light
-        },
+        drawable = R.drawable.back_arrow,
+        onClick
+    )
+}
+
+fun darkModeToolbarButton(
+    onClick: () -> Unit,
+): ToolbarButtonModel {
+    return ToolbarButtonModel(
+        R.drawable.icon_dark,
         onClick
     )
 }

@@ -11,6 +11,7 @@ import com.ofek.sample.presentation.main.bottombar.BottomBarButtonModel
 import com.ofek.sample.presentation.main.bottombar.BottomBarState
 import com.ofek.sample.presentation.main.toolbar.ToolbarState
 import com.ofek.sample.presentation.main.toolbar.backToolbarButtonModel
+import com.ofek.sample.presentation.main.toolbar.darkModeToolbarButton
 import com.ofek.sample.presentation.navigation.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -63,9 +64,14 @@ class MainActivityViewModel @Inject constructor(
                     titleResId = R.string.articles_text,
                     startButtons = listOf(
                         backToolbarButtonModel(
-                            resourcesProvider.isSystemInDarkMode(),
                             ::onBackAction
                         )
+                    ),
+                    endButtons = listOf(
+                        darkModeToolbarButton(
+                        ) {
+                            resourcesProvider.toggleDarkMode()
+                        }
                     )
                 )
             }
@@ -74,9 +80,13 @@ class MainActivityViewModel @Inject constructor(
                     titleResId = R.string.stories_text,
                     startButtons = listOf(
                         backToolbarButtonModel(
-                            resourcesProvider.isSystemInDarkMode(),
                             ::onBackAction
                         )
+                    ),
+                    endButtons = listOf(
+                        darkModeToolbarButton() {
+                            resourcesProvider.toggleDarkMode()
+                        }
                     )
                 )
             }
@@ -88,9 +98,13 @@ class MainActivityViewModel @Inject constructor(
                     titleResId = R.string.favorites_text,
                     startButtons = listOf(
                         backToolbarButtonModel(
-                            resourcesProvider.isSystemInDarkMode(),
                             ::onBackAction
                         )
+                    ),
+                    endButtons = listOf(
+                        darkModeToolbarButton() {
+                            resourcesProvider.toggleDarkMode()
+                        }
                     )
                 )
             }

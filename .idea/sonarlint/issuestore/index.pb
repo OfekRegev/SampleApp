@@ -5,24 +5,14 @@ l
 <app/src/main/java/com/ofek/sample/domain/base/BaseUseCase.kt,e/1/e1fcebb3ca13f405b8101a1058b205bdb53ab11b
 @
 app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
-y
-Iapp/src/main/java/com/ofek/sample/presentation/common/ResourceProvider.kt,e/3/e3b09306353d622c98affa7cf75c8a10be8a76e8
 }
 Mapp/src/main/java/com/ofek/sample/presentation/common/ViewModelDispatchers.kt,6/3/639f82f7173b71589d8bbf200988cedebb175c3f
-
-Qapp/src/main/java/com/ofek/sample/presentation/main/toolbar/ToolbarButtonModel.kt,9/e/9e707a57c9292d0b9fe32768cff4b4f8a9ab5517
-~
-Napp/src/main/java/com/ofek/sample/presentation/common/ResourcesProviderImpl.kt,0/f/0f37ea9e1e4e15b9e8ab940295890240910adb04
 <
 build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
 X
 (app/src/main/java/com/ofek/sample/App.kt,e/a/ead68bb4edd5ec51529e3a5e19ae11a5f43678ff
 i
 9app/src/main/java/com/ofek/sample/ui/themes/Typography.kt,1/5/15c299a4f050c5677bd722b7b081b5c7fabb407b
-m
-=app/src/main/java/com/ofek/sample/ui/main/theme/MainColors.kt,c/0/c0f22126995cb37c2ad6b1d76968f1bc9299aa52
-l
-<app/src/main/java/com/ofek/sample/ui/main/theme/MainTheme.kt,a/5/a5cc7166784abbc6de73417c2f7473bc944f2145
 p
 @app/src/main/java/com/ofek/sample/di/PresentationCommonModule.kt,0/8/0852d3f95ef1e44fcf1d5f7e762a11bd626ed327
 h
