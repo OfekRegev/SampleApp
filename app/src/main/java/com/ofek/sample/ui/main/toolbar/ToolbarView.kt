@@ -1,6 +1,7 @@
 package com.ofek.sample.ui.main.toolbar
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -23,7 +24,10 @@ fun ToolbarView(
     toolbarState?.let {
         ToolbarTheme {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(ToolbarTheme.colors.toolbarBackgroundColor)
+                    .height(Sizes.TOOLBAR_SIZE.dp)
             ) {
                 // start buttons
                 Row(

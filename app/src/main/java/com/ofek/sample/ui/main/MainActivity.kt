@@ -1,8 +1,8 @@
 package com.ofek.sample.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -13,7 +13,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MainActivityRootView(
-                viewModelStoreOwner = this
+                viewModelStoreOwner = this,
+                lifecycleOwner = this,
+                backPressedDispatcher = onBackPressedDispatcher
             )
         }
     }

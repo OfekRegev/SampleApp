@@ -1,24 +1,26 @@
 package com.ofek.sample.ui.main
 
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ofek.sample.domain.navigation.OnBoardingDestination
 import com.ofek.sample.presentation.main.MainActivityViewModel
+import com.ofek.sample.presentation.navigation.OnBoardingDestination
 import com.ofek.sample.ui.main.theme.MainTheme
 import com.ofek.sample.ui.main.toolbar.ToolbarView
 
@@ -27,10 +29,12 @@ import com.ofek.sample.ui.main.toolbar.ToolbarView
 fun MainActivityRootView(
     mainViewModel: MainActivityViewModel = viewModel(),
     viewModelStoreOwner: ViewModelStoreOwner,
+    lifecycleOwner: LifecycleOwner,
+    backPressedDispatcher: OnBackPressedDispatcher,
 ) {
     val navigationPath = mainViewModel.getNavigationPath().observeAsState()
     val navController = rememberNavController()
-    val toolbarState = mainViewModel.toolbarState.observeAsState()
+    val toolbarState = mainViewModel.getToolbarState().observeAsState()
     val navigationPathReady by remember {
         derivedStateOf {
             navigationPath.value != null
@@ -42,6 +46,14 @@ fun MainActivityRootView(
         if (newPath != null && currentDestination != null && currentDestination.route != newPath) {
             navController.navigate(route = newPath)
         }
+    }
+    lifecycleOwner.lifecycleScope.launchWhenCreated {
+        mainViewModel.navigateToFirstScreen()
+    }
+    navController.setLifecycleOwner(lifecycleOwner)
+    navController.setOnBackPressedDispatcher(backPressedDispatcher)
+    BackHandler {
+        mainViewModel.onBackAction()
     }
     if (navigationPathReady) {
         val startDestination = mainViewModel.getNavigationPath().value
@@ -57,7 +69,7 @@ fun MainActivityRootView(
                     modifier = Modifier.padding(paddingValues)
                 ) {
                     composable(
-                        route = OnBoardingDestination.DECLARATION_DESTINATION_ROUTE
+                        route = OnBoardingDestination.DECLARATION_ROUTE
                     ) {
                         CompositionLocalProvider(
                             LocalViewModelStoreOwner provides viewModelStoreOwner
@@ -65,6 +77,7 @@ fun MainActivityRootView(
                             Box(modifier = Modifier.fillMaxHeight())
                         }
                     }
+
                 }
             }
         }

@@ -5,49 +5,40 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ofek.sample.R
-import com.ofek.sample.domain.navigation.ArticlesDestination
-import com.ofek.sample.domain.navigation.NavigationUseCase
-import com.ofek.sample.domain.navigation.OnBoardingDestination
 import com.ofek.sample.presentation.common.ResourceProvider
 import com.ofek.sample.presentation.common.ViewModelDispatchers
 import com.ofek.sample.presentation.main.toolbar.ToolbarState
 import com.ofek.sample.presentation.main.toolbar.backToolbarButtonModel
+import com.ofek.sample.presentation.navigation.ArticlesDestination
+import com.ofek.sample.presentation.navigation.NavigationManager
+import com.ofek.sample.presentation.navigation.OnBoardingDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val navigationUseCase: NavigationUseCase,
+    private val navigationUseCase: NavigationManager,
     private val resourcesProvider: ResourceProvider,
     private val viewModelDispatchers: ViewModelDispatchers,
 ) : ViewModel() {
 
-    private val _toolbarState: MutableLiveData<ToolbarState?> = MutableLiveData(null)
-    private val _navigationPath: MutableLiveData<String?> = MutableLiveData(null)
-    val toolbarState: LiveData<ToolbarState?> = _toolbarState
-
-    fun getNavigationPath(): LiveData<String?> = _navigationPath
-
     init {
-        viewModelScope.launch {
-            // navigate to the initial/first screen
-            navigationUseCase.navigateNextDestination(
-                OnBoardingDestination()
-            )
-        }
-
-        navigationUseCase()
+        navigationUseCase.navigationPathState()
             .onEach { newPath ->
                 updateToolbarState(newPath)
                 onNavigationPathChanged(newPath)
             }.launchIn(viewModelScope)
     }
+
+    private val _toolbarState: MutableLiveData<ToolbarState?> = MutableLiveData(null)
+    private val _navigationPath: MutableLiveData<String?> = MutableLiveData(null)
+
+
+    fun getToolbarState() : LiveData<ToolbarState?> = _toolbarState
+    fun getNavigationPath(): LiveData<String?> = _navigationPath
 
     private fun onNavigationPathChanged(newPath: String?) {
         viewModelScope.launch(context = viewModelDispatchers.mainDispatcher) {
@@ -79,11 +70,18 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    private fun onBackAction() {
+    fun onBackAction() {
         viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
             navigationUseCase.goBack()
         }
     }
 
+    fun navigateToFirstScreen() {
+        viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
+            navigationUseCase.navigateNext(
+                OnBoardingDestination()
+            )
+        }
+    }
 
 }

@@ -8,3 +8,5 @@ val black = Color.Black
 val dividerColor = Color.LightGray
 val primaryLightColor = Color.Green
 val primaryDarkColor = Color.Blue
+val textLightColor = black
+val textDarkColor = white

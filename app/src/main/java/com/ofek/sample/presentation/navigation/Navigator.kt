@@ -1,39 +1,31 @@
-package com.ofek.sample.domain.navigation
+package com.ofek.sample.presentation.navigation
 
-import com.ofek.sample.domain.base.BaseUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 
 /**
- * This use case should handle navigation between the applications screens
+ * This class should handle navigation between the applications screens
  * The navigation channel should act as a single source of truth for the app navigation
+ * Navigation scheme built as recommended in https://developer.android.com/jetpack/compose/navigation
  */
-class NavigationUseCase @Inject constructor(
-    private val channel: MutableStateFlow<String?>
-) :
-    BaseUseCase<BaseUseCase.None, StateFlow<String?>>() {
+class Navigator : NavigationManager {
 
+    private val channel = MutableStateFlow<String?>(null)
 
-    override fun run(
-        params: None?
-    ): StateFlow<String?> {
-        return channel
-    }
+    override fun navigationPathState(): Flow<String?> = channel
 
     // navigate to the destination by adding the destination route to the current destination route
-    suspend fun navigateNextDestination(
+    override fun navigateNext(
         destination: Destination
     ) {
-        channel.emit(
+        channel.tryEmit(
             buildPath(channel.value, destination)
         )
     }
 
     // navigate back by dropping the last route in the path
-    suspend fun goBack() {
-        channel.emit(
+    override fun goBack() {
+        channel.tryEmit(
             removeLastRouteFromPath(channel.value)
         )
     }
@@ -77,7 +69,19 @@ class NavigationUseCase @Inject constructor(
             newPathBuilder.toString()
         }
     }
+
+    /**
+     * Checking whether the current destination matches the argument destination.
+     * using route.startsWith() because path might contains unknown params, i.e - destination?param=value
+     */
+    override fun isCurrentDestination(path: String, destination: Destination): Boolean {
+        val pathSplit = path.split('/')
+        // path could start with root destination even when it's not the current destination, i.e rootdestination/otherdestination.
+        return if (pathSplit.size <= 1 && destination.rootDestination) {
+            path.startsWith(destination.route)
+        } else {
+            val lastRoute = pathSplit.lastOrNull()
+            lastRoute.orEmpty().startsWith(destination.route)
+        }
+    }
 }
-
-
-

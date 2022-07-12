@@ -3,10 +3,10 @@ package com.ofek.sample.ui.main.toolbar.theme
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
-import com.ofek.sample.ui.themes.black
 import com.ofek.sample.ui.themes.primaryDarkColor
 import com.ofek.sample.ui.themes.primaryLightColor
-import com.ofek.sample.ui.themes.white
+import com.ofek.sample.ui.themes.textDarkColor
+import com.ofek.sample.ui.themes.textLightColor
 
 @Immutable
 class ToolbarColors(
@@ -20,11 +20,11 @@ val LocalToolbarColors = compositionLocalOf {
 }
 
 val lightToolbarColors = ToolbarColors(
-    toolbarTitleTextColor = white,
+    toolbarTitleTextColor = textLightColor,
     toolbarBackgroundColor = primaryLightColor
 )
 
 val darkToolbarColors = ToolbarColors(
-    toolbarTitleTextColor = black,
+    toolbarTitleTextColor = textDarkColor,
     toolbarBackgroundColor = primaryDarkColor
 )
