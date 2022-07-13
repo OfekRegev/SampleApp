@@ -5,11 +5,15 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import com.ofek.sample.presentation.feed.FeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var feedViewModelFactory: FeedViewModel.FeedViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,10 +21,12 @@ class MainActivity : AppCompatActivity() {
             CompositionLocalProvider(
                 LocalViewModelStoreOwner provides this
             ) {
+                // using activity as ViewModelStoreOwner will allow ViewModels to survive configuration changes
                 MainActivityRootView(
                     viewModelStoreOwner = this,
                     lifecycleOwner = this,
-                    backPressedDispatcher = onBackPressedDispatcher
+                    backPressedDispatcher = onBackPressedDispatcher,
+                    feedViewModelFactory = feedViewModelFactory
                 )
             }
         }

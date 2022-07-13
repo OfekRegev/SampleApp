@@ -14,19 +14,23 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.ofek.sample.presentation.feed.FeedViewModel
 import com.ofek.sample.presentation.main.MainActivityViewModel
-import com.ofek.sample.presentation.navigation.ArticlesDestination
-import com.ofek.sample.presentation.navigation.FavoritesDestination
+import com.ofek.sample.presentation.navigation.FeedDestination
 import com.ofek.sample.presentation.navigation.OnBoardingDestination
-import com.ofek.sample.presentation.navigation.StoriesDestination
+import com.ofek.sample.ui.feed.FeedRootView
 import com.ofek.sample.ui.main.bottombar.BottomBarView
 import com.ofek.sample.ui.main.theme.MainTheme
 import com.ofek.sample.ui.main.toolbar.ToolbarView
@@ -39,6 +43,7 @@ fun MainActivityRootView(
     viewModelStoreOwner: ViewModelStoreOwner,
     lifecycleOwner: LifecycleOwner,
     backPressedDispatcher: OnBackPressedDispatcher,
+    feedViewModelFactory: FeedViewModel.FeedViewModelFactory
 ) {
     val navigationPathState = mainViewModel.getNavigationPath()
     val navController = rememberNavController()
@@ -61,6 +66,9 @@ fun MainActivityRootView(
     navController.setOnBackPressedDispatcher(backPressedDispatcher)
     BackHandler {
         mainViewModel.onBackAction()
+    }
+    LocalLifecycleOwner.current.lifecycleScope.launchWhenCreated {
+        mainViewModel.onScreenCreated()
     }
     MainTheme {
         Scaffold(
@@ -92,41 +100,22 @@ fun MainActivityRootView(
                     }
 
                     composable(
-                        route = ArticlesDestination.DECLARATION_ROUTE
+                        route = FeedDestination.DECLARATION_ROUTE,
+                        arguments = listOf(
+                            navArgument(FeedDestination.FEED_TYPE_ARGUMENT_KEY) {
+                                type = NavType.StringType
+                            }
+                        )
                     ) {
+                        val feedTypeParam =
+                            it.arguments?.getString(FeedDestination.FEED_TYPE_ARGUMENT_KEY)
+                                .orEmpty()
                         CompositionLocalProvider(
                             LocalViewModelStoreOwner provides viewModelStoreOwner
                         ) {
-                            Box(
-                                modifier = Modifier.fillMaxHeight(
-
-                                )
-                            )
-                        }
-                    }
-                    composable(
-                        route = StoriesDestination.DECLARATION_ROUTE
-                    ) {
-                        CompositionLocalProvider(
-                            LocalViewModelStoreOwner provides viewModelStoreOwner
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxHeight(
-
-                                )
-                            )
-                        }
-                    }
-                    composable(
-                        route = FavoritesDestination.DECLARATION_ROUTE
-                    ) {
-                        CompositionLocalProvider(
-                            LocalViewModelStoreOwner provides viewModelStoreOwner
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxHeight(
-
-                                )
+                            FeedRootView(
+                                factory = feedViewModelFactory,
+                                FeedDestination.feedType(feedTypeParam)
                             )
                         }
                     }

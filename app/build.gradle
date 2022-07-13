@@ -48,11 +48,13 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     //--------------------------------------------------------------------
+
     // Jetpack Lifecycle
     def lifecycle_version = "2.4.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
     //--------------------------------------------------------------------
+
     // Compose
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
@@ -61,18 +63,30 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.5.0'
     implementation "androidx.navigation:navigation-compose:2.5.0"
     implementation("io.coil-kt:coil-compose:2.1.0") //Coil - image loading
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.24.13-rc" // swipe to refresh
     //--------------------------------------------------------------------
+
     // Retrofit + Okhttp
     def retrofit_version = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
     //--------------------------------------------------------------------
+
+    // Gson -
+    def gson_version = "2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:$gson_version"
+    implementation "com.google.code.gson:gson:$gson_version"
+    //--------------------------------------------------------------------
+
+    // Room
+    def room_version = "2.4.2"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    //--------------------------------------------------------------------
+
     // Hilt
     implementation("com.google.dagger:hilt-android:2.42")
     kapt 'com.google.dagger:hilt-compiler:2.42'
-    //--------------------------------------------------------------------
-    // Paper - noSql database
-    implementation 'io.github.pilgr:paperdb:2.7.2'
     //--------------------------------------------------------------------
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

@@ -1,4 +1,4 @@
-package com.ofek.sample.ui.postlist.theme
+package com.ofek.sample.ui.feed.postlist.theme
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
@@ -10,7 +10,7 @@ class PostListItemTypography(
 )
 
 
-val postListItemTypography = PostListItemTypography(
+val postListItemDefaultTypography = PostListItemTypography(
     titleTextStyle = regularFont.copy(
         fontSize = 16.sp,
     ),

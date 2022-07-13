@@ -52,7 +52,7 @@ class Navigator : NavigationManager {
     ): String {
         val pathSplit = currentPath.orEmpty().split('/')
         val newPathBuilder = StringBuilder()
-        destination.ancestorRoutes.forEachIndexed { index, ancestor ->
+        destination.ancestors.forEachIndexed { index, ancestor ->
             // preferably using the ancestor from the current path if it exists
             if (index < pathSplit.size && pathSplit[index].startsWith(ancestor)) {
                 newPathBuilder.append(pathSplit[index])
@@ -86,7 +86,7 @@ class Navigator : NavigationManager {
         val pathSplit = path.split('/')
         // root destination would not have ancestors
         // path could start with root destination even when it's not the current destination, i.e rootdestination/otherdestination.
-        return if (pathSplit.size <= 1 && destination.ancestorRoutes.isEmpty()) {
+        return if (pathSplit.size <= 1 && destination.ancestors.isEmpty()) {
             path.startsWith(destination.route)
         } else {
             val lastRoute = pathSplit.lastOrNull()

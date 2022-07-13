@@ -34,9 +34,6 @@ class MainActivityViewModel @Inject constructor(
                 onNavigationPathChanged(newPath)
             }
             .launchIn(viewModelScope)
-        viewModelScope.launch(viewModelDispatchers.asyncComputationDispatcher) {
-            navigateToDestination(OnBoardingDestination())
-        }
     }
 
     private val _toolbarState: MutableLiveData<ToolbarState?> = MutableLiveData(null)
@@ -177,6 +174,16 @@ class MainActivityViewModel @Inject constructor(
     fun onBackAction() {
         viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
             navigationManager.goBack()
+        }
+    }
+
+    fun onScreenCreated() {
+        // navigate to the first screen only when screen has created for the first time
+        // avoid changing navigation on recreation(i.e configuration changes)
+        if (_navigationPath.value == null) {
+            viewModelScope.launch(viewModelDispatchers.asyncComputationDispatcher) {
+                navigateToDestination(OnBoardingDestination())
+            }
         }
     }
 

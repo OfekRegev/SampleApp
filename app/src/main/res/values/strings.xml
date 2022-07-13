@@ -6,4 +6,6 @@
     <string name="open_favorites">Open Favorites</string>
     <string name="stories_text">Stories</string>
     <string name="favorites_text">Favorites</string>
+    <string name="general_error_message">General Error</string>
+    <string name="network_error_message">Network Error</string>
 </resources>

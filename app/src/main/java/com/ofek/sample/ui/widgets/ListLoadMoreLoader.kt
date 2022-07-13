@@ -2,6 +2,7 @@ package com.ofek.sample.ui.widgets
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -15,7 +16,8 @@ fun ListLoadMoreLoader(
     indicatorColor: Color,
 ) {
     Row(
-        horizontalArrangement = Arrangement.Center
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(Sizes.LIST_LOAD_MORE_LOADER_SIZE.dp),
