@@ -61,9 +61,8 @@ class FeedViewModel @AssistedInject constructor(
         val items = currentState?.items.orEmpty()
         if (items.isEmpty() && loading.not()) {
             fetchFeedItems(0, false)
-        }
-        // favorites feed should refresh as it might changed while visiting other feeds
-        if (feedType == FeedType.FAVORITES) {
+        } else if (feedType == FeedType.FAVORITES) {
+            // favorites feed should refresh as it might changed while visiting other feeds
             fetchFeedItems(0, true)
         }
     }
