@@ -1,20 +1,17 @@
 package com.ofek.sample.ui.feed
 
-import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ofek.sample.domain.feed.FeedType
-import com.ofek.sample.presentation.errors.PresentationError
 import com.ofek.sample.presentation.feed.FeedViewModel
 import com.ofek.sample.ui.feed.postlist.PostListView
 import com.ofek.sample.ui.feed.theme.FeedTheme
+import com.ofek.sample.ui.widgets.ErrorHandler
 
 
 @Composable
@@ -41,7 +38,8 @@ fun FeedRootView(
             canLoadMore = state?.canLoadMore ?: false,
             colors = FeedTheme.colors.postListItemColors,
             typography = FeedTheme.typography.postListItemTypography,
-            onRefresh = { feedViewModel.refresh() }
+            onRefresh = { feedViewModel.refresh() },
+            error = feedViewModel.getErrorState().value != null
         ) {
             feedViewModel.onLoadMore()
         }
@@ -49,17 +47,3 @@ fun FeedRootView(
     }
 }
 
-@Composable
-fun ErrorHandler(
-    errorState: State<PresentationError?>
-) {
-    val context = LocalContext.current
-    val error by remember {
-        errorState
-    }
-    LaunchedEffect(error) {
-        error?.let {
-            Toast.makeText(context, it.messageRes, Toast.LENGTH_LONG).show()
-        }
-    }
-}

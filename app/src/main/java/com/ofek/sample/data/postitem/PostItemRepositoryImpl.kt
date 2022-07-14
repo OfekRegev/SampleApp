@@ -10,7 +10,11 @@ class PostItemRepositoryImpl(
 ) : PostItemRepository {
 
     override suspend fun fetchPost(postId: String): RemoteResponseDto<PostItemDto> {
-        return dataSource.fetchPostItem(postId)
+        return try {
+            dataSource.fetchPostItem(postId)
+        } catch (exception: Exception) {
+            RemoteResponseDto.Error(exception)
+        }
     }
 
 }

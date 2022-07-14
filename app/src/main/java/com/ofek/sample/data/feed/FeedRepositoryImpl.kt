@@ -85,7 +85,11 @@ class FeedRepositoryImpl(
         if (androidSystemManager.isNetworkAvailable().not()) {
             return RemoteResponseDto.Error(NetworkUnavailableException())
         }
-        val response = apiDataSource.fetchFeed(remotePagingRequest.page, feedType)
+        val response = try {
+            apiDataSource.fetchFeed(remotePagingRequest.page, feedType)
+        } catch (exception: Exception) {
+            RemoteResponseDto.Error(exception = exception)
+        }
         return if (response is RemoteResponseDto.Success) {
             val canLoadMore = response.content.items.count() == response.content.itemsPerPage
             val items = response.content.items.map {

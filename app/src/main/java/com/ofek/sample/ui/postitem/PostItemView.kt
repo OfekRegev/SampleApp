@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ofek.sample.R
 import com.ofek.sample.presentation.postitem.PostItemViewModel
 import com.ofek.sample.ui.postitem.theme.PostItemTheme
+import com.ofek.sample.ui.widgets.ErrorHandler
 
 
 @Composable
@@ -33,7 +34,7 @@ fun PostItemView(
         postItemViewModel.onScreenCreated()
     }
     PostItemTheme {
-
+        ErrorHandler(errorState = postItemViewModel.errorState().observeAsState())
         Column(
             modifier = Modifier
                 .padding(Sizes.ROOT_PADDING.dp)

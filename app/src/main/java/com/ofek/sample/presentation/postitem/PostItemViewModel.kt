@@ -25,6 +25,7 @@ class PostItemViewModel @AssistedInject constructor(
     private val _errorLiveData = MutableLiveData<PresentationError?>()
 
     fun postItemState(): LiveData<PostItemState> = _postItemStateLiveData
+    fun errorState(): LiveData<PresentationError?> = _errorLiveData
 
     companion object {
         fun provideFactory(

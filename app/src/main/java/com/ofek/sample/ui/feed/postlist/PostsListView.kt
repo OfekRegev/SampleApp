@@ -27,6 +27,7 @@ fun PostListView(
     canLoadMore: Boolean,
     colors: PostListItemColors,
     typography: PostListItemTypography,
+    error: Boolean,
     onRefresh: () -> Unit,
     onLoadMore: () -> Unit,
 ) {
@@ -48,8 +49,8 @@ fun PostListView(
             ) { _, postItem ->
                 PostListItem(model = postItem, colors = colors, typography = typography)
             }
-            item() {
-                if (canLoadMore) {
+            item {
+                if (canLoadMore && error.not()) {
                     ListLoadMoreLoader(indicatorColor = FeedTheme.colors.listLoaderColor)
                 }
             }

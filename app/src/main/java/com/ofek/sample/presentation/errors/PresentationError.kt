@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import com.ofek.sample.R
 import com.ofek.sample.data.exceptions.ApiException
 import com.ofek.sample.data.exceptions.NetworkUnavailableException
-import java.lang.Exception
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 sealed class PresentationError(
@@ -18,7 +18,7 @@ fun presentationErrorFromException(
     exception: Exception,
 ): PresentationError {
     return if (exception is NetworkUnavailableException ||
-        exception is ApiException || exception is UnknownHostException
+        exception is ApiException || exception is UnknownHostException || exception is SocketTimeoutException
     ) {
         NetworkError
     } else {

@@ -62,6 +62,10 @@ class FeedViewModel @AssistedInject constructor(
         if (items.isEmpty() && loading.not()) {
             fetchFeedItems(0, false)
         }
+        // favorites feed should refresh as it might changed while visiting other feeds
+        if (feedType == FeedType.FAVORITES) {
+            fetchFeedItems(0, true)
+        }
     }
 
     fun onLoadMore() {
@@ -81,6 +85,7 @@ class FeedViewModel @AssistedInject constructor(
         _feedStateLiveData.value = _feedStateLiveData.value?.copy(
             isLoading = true
         )
+        _errorLiveData.value = null
         val job = viewModelScope.launch(
             context = viewModelDispatchers.asyncIoDispatcher,
         ) {
