@@ -13,6 +13,7 @@ import com.ofek.sample.presentation.errors.GeneralError
 import com.ofek.sample.presentation.errors.NetworkError
 import com.ofek.sample.presentation.feed.models.mapFeedPostItemDtoToUiPostListItemModel
 import com.ofek.sample.presentation.navigation.NavigationManager
+import com.ofek.sample.presentation.navigation.PostDestination
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -134,12 +135,12 @@ class FeedViewModel @AssistedInject constructor(
         fetchingJob = job
     }
 
-    private fun onPostItemClicked(s: String) {
-//        navigationManager.navigateTo()
+    private fun onPostItemClicked(postId: String) {
+        navigationManager.navigateTo(PostDestination(postId))
     }
 
     fun refresh() {
-        // cancel any other fetching action if exists so it won't collide with the refresh
+        // cancel any other fetching job if exists so it won't collide with the refresh
         fetchingJob?.cancel()
         fetchFeedItems(0, true)
     }

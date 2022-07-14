@@ -1,5 +1,7 @@
 package com.ofek.sample.presentation.navigation
 
+import com.ofek.sample.BuildConfig
+import com.ofek.sample.extensions.norNullAndEmpty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -19,7 +21,7 @@ class Navigator : NavigationManager {
         destination: Destination
     ) {
         val newPath = buildPath(channel.value, destination)
-        if (newPath != channel.value) {
+        if (newPath.norNullAndEmpty() && newPath != channel.value) {
             channel.tryEmit(
                 newPath
             )
@@ -28,9 +30,12 @@ class Navigator : NavigationManager {
 
     // navigate back by dropping the last route in the path
     override fun goBack() {
-        channel.tryEmit(
-            removeLastRouteFromPath(channel.value)
-        )
+        val newPath = removeLastRouteFromPath(channel.value)
+        if (newPath.norNullAndEmpty()) {
+            channel.tryEmit(
+                newPath
+            )
+        }
     }
 
     private fun removeLastRouteFromPath(
@@ -49,32 +54,27 @@ class Navigator : NavigationManager {
     private fun buildPath(
         currentPath: String?,
         destination: Destination
-    ): String {
+    ): String? {
         val pathSplit = currentPath.orEmpty().split('/')
         val newPathBuilder = StringBuilder()
+        // using ancestors is necessary to define whether the new route should replace or append to the current route
+        // for example navigation from onboarding/articles to stories would be a replacement - i.e onboarding/stories, and not appending i.e onboarding/articles/stories
         destination.ancestors.forEachIndexed { index, ancestor ->
-            // preferably using the ancestor from the current path if it exists
             if (index < pathSplit.size && pathSplit[index].startsWith(ancestor)) {
+                // taking the route from current path as ancestor could be dynamic - i.e ancestor1/{ancestor2}/destination
                 newPathBuilder.append(pathSplit[index])
             } else {
-                // whenever it does not exist, the default ancestor is added and will have default values for arguments(empty arguments)
-                newPathBuilder.append(ancestor)
+                // this is an edge case, this is normally cannot happen under any circumstances, only when the destinations didn't set up ancestors correctly
+                // thus on debug mode throwing an indicative exception is required, otherwise just cancel the navigation by returning null path
+                if (BuildConfig.DEBUG) {
+                    throw IllegalStateException("path doesn't comply to the ancestors, please review destinations declaration, currentPath: $currentPath, next destination: $destination")
+                } else {
+                    return null
+                }
             }
             newPathBuilder.append('/')
         }
         newPathBuilder.append(destination.route)
-        if (destination.arguments.isNotEmpty()) {
-            newPathBuilder.append("?")
-            val arguments = destination.arguments.entries
-            // adding arguments to the current route
-            arguments.forEachIndexed { index, argument ->
-                newPathBuilder.append("${argument.key}=${argument.value}")
-                // following the compose navigation scheme the last argument should not be escaped with '&'
-                if (index < arguments.size - 1) {
-                    newPathBuilder.append("&")
-                }
-            }
-        }
         return newPathBuilder.toString()
     }
 
@@ -84,13 +84,7 @@ class Navigator : NavigationManager {
      */
     override fun isCurrentDestination(path: String, destination: Destination): Boolean {
         val pathSplit = path.split('/')
-        // root destination would not have ancestors
-        // path could start with root destination even when it's not the current destination, i.e rootdestination/otherdestination.
-        return if (pathSplit.size <= 1 && destination.ancestors.isEmpty()) {
-            path.startsWith(destination.route)
-        } else {
-            val lastRoute = pathSplit.lastOrNull()
-            lastRoute.orEmpty().startsWith(destination.route)
-        }
+        val lastRoute = pathSplit.lastOrNull()
+        return lastRoute.orEmpty().startsWith(destination.route)
     }
 }

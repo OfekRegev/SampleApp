@@ -8,4 +8,5 @@
     <string name="favorites_text">Favorites</string>
     <string name="general_error_message">General Error</string>
     <string name="network_error_message">Network Error</string>
+    <string name="post_text">POST</string>
 </resources>

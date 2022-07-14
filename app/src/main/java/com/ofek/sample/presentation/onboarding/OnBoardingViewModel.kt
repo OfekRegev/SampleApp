@@ -21,19 +21,19 @@ class OnBoardingViewModel @Inject constructor(
 
     fun openArticles() {
         viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
-            navigationManager.navigateTo(ArticlesDestination())
+            navigationManager.navigateTo(ArticlesDestination)
         }
     }
 
     fun openStories() {
         viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
-            navigationManager.navigateTo(StoriesDestination())
+            navigationManager.navigateTo(StoriesDestination)
         }
     }
 
     fun openFavorites() {
         viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
-            navigationManager.navigateTo(FavoritesDestination())
+            navigationManager.navigateTo(FavoritesDestination)
         }
     }
 

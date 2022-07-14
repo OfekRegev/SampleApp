@@ -7,3 +7,4 @@ class ToolbarState(
     val endButtons: List<ToolbarButtonModel> = emptyList(),
     val startButtons: List<ToolbarButtonModel> = emptyList(),
 )
+

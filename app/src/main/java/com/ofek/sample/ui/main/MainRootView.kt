@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -30,6 +31,7 @@ import com.ofek.sample.presentation.feed.FeedViewModel
 import com.ofek.sample.presentation.main.MainActivityViewModel
 import com.ofek.sample.presentation.navigation.FeedDestination
 import com.ofek.sample.presentation.navigation.OnBoardingDestination
+import com.ofek.sample.presentation.navigation.PostDestination
 import com.ofek.sample.ui.feed.FeedRootView
 import com.ofek.sample.ui.main.bottombar.BottomBarView
 import com.ofek.sample.ui.main.theme.MainTheme
@@ -85,7 +87,7 @@ fun MainActivityRootView(
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = OnBoardingDestination().route,
+                    startDestination = OnBoardingDestination.DECLARATION_ROUTE,
                     modifier = Modifier
                         .padding(paddingValues)
                 ) {
@@ -102,24 +104,40 @@ fun MainActivityRootView(
                     composable(
                         route = FeedDestination.DECLARATION_ROUTE,
                         arguments = listOf(
-                            navArgument(FeedDestination.FEED_TYPE_ARGUMENT_KEY) {
+                            navArgument(FeedDestination.FEED_TYPE_ARGUMENT_DECLARATION_KEY) {
                                 type = NavType.StringType
                             }
                         )
                     ) {
                         val feedTypeParam =
-                            it.arguments?.getString(FeedDestination.FEED_TYPE_ARGUMENT_KEY)
+                            it.arguments?.getString(FeedDestination.FEED_TYPE_ARGUMENT_DECLARATION_KEY)
                                 .orEmpty()
                         CompositionLocalProvider(
                             LocalViewModelStoreOwner provides viewModelStoreOwner
                         ) {
                             FeedRootView(
                                 factory = feedViewModelFactory,
-                                FeedDestination.feedType(feedTypeParam)
+                                FeedDestination.routeToFeedType(feedTypeParam)
                             )
                         }
                     }
-
+                    composable(
+                        route = PostDestination.DECLARATION_ROUTE,
+                        arguments = listOf(
+                            navArgument(PostDestination.POST_ID_ARGUMENT_DECLARATION_KEY) {
+                                type = NavType.StringType
+                            }
+                        )
+                    ) {
+                        val postIdParam =
+                            it.arguments?.getString(PostDestination.POST_ID_ARGUMENT_DECLARATION_KEY)
+                                .orEmpty()
+                        CompositionLocalProvider(
+                            LocalViewModelStoreOwner provides viewModelStoreOwner
+                        ) {
+                            Text(text = PostDestination.getPostId(postIdParam))
+                        }
+                    }
                 }
             }
         }

@@ -55,7 +55,7 @@ class MainActivityViewModel @Inject constructor(
         val toolbarState = when {
             navigationManager.isCurrentDestination(
                 currentPath.orEmpty(),
-                ArticlesDestination()
+                ArticlesDestination
             ) -> {
                 ToolbarState(
                     titleResId = R.string.articles_text,
@@ -72,7 +72,7 @@ class MainActivityViewModel @Inject constructor(
                     )
                 )
             }
-            navigationManager.isCurrentDestination(currentPath.orEmpty(), StoriesDestination()) -> {
+            navigationManager.isCurrentDestination(currentPath.orEmpty(), StoriesDestination) -> {
                 ToolbarState(
                     titleResId = R.string.stories_text,
                     startButtons = listOf(
@@ -89,7 +89,7 @@ class MainActivityViewModel @Inject constructor(
             }
             navigationManager.isCurrentDestination(
                 currentPath.orEmpty(),
-                FavoritesDestination()
+                FavoritesDestination
             ) -> {
                 ToolbarState(
                     titleResId = R.string.favorites_text,
@@ -100,6 +100,22 @@ class MainActivityViewModel @Inject constructor(
                     ),
                     endButtons = listOf(
                         darkModeToolbarButton() {
+                            resourcesProvider.toggleDarkMode()
+                        }
+                    )
+                )
+            }
+            navigationManager.isCurrentDestination(currentPath.orEmpty(), PostDestination()) -> {
+                ToolbarState(
+                    titleResId = R.string.post_text,
+                    startButtons = listOf(
+                        backToolbarButtonModel(
+                            ::onBackAction
+                        )
+                    ),
+                    endButtons = listOf(
+                        darkModeToolbarButton(
+                        ) {
                             resourcesProvider.toggleDarkMode()
                         }
                     )
@@ -118,48 +134,50 @@ class MainActivityViewModel @Inject constructor(
         if (newPath == null) {
             return
         }
-        if (navigationManager.isCurrentDestination(
-                newPath,
-                OnBoardingDestination()
-            )
-        ) {
-            _bottomBarState.value = null
-        } else {
-            val articlesButtonModel = BottomBarButtonModel(
-                textResId = R.string.articles_text,
-                iconResId = R.drawable.icon_articles,
-                selected = navigationManager.isCurrentDestination(
-                    newPath.orEmpty(),
-                    ArticlesDestination()
-                ),
-                destination = ArticlesDestination(),
-                onClick = ::navigateToDestination
-            )
-            val storiesButtonModel = BottomBarButtonModel(
-                textResId = R.string.stories_text,
-                iconResId = R.drawable.icon_stories,
-                selected = navigationManager.isCurrentDestination(
-                    newPath.orEmpty(),
-                    StoriesDestination()
-                ),
-                destination = StoriesDestination(),
-                onClick = ::navigateToDestination
-            )
-            val favoritesButtonModel = BottomBarButtonModel(
-                textResId = R.string.favorites_text,
-                iconResId = R.drawable.icon_favorites,
-                selected = navigationManager.isCurrentDestination(
-                    newPath.orEmpty(),
-                    FavoritesDestination()
-                ),
-                destination = FavoritesDestination(),
-                onClick = ::navigateToDestination
-            )
-            _bottomBarState.value = BottomBarState(
-                articlesButtonModel = articlesButtonModel,
-                storiesButtonModel = storiesButtonModel,
-                favoritesButtonModel = favoritesButtonModel,
-            )
+        when {
+            navigationManager.isCurrentDestination(newPath, OnBoardingDestination) -> {
+                _bottomBarState.value = null
+            }
+            navigationManager.isCurrentDestination(newPath, PostDestination()) -> {
+                _bottomBarState.value = null
+            }
+            else -> {
+                val articlesButtonModel = BottomBarButtonModel(
+                    textResId = R.string.articles_text,
+                    iconResId = R.drawable.icon_articles,
+                    selected = navigationManager.isCurrentDestination(
+                        newPath.orEmpty(),
+                        ArticlesDestination
+                    ),
+                    destination = ArticlesDestination,
+                    onClick = ::navigateToDestination
+                )
+                val storiesButtonModel = BottomBarButtonModel(
+                    textResId = R.string.stories_text,
+                    iconResId = R.drawable.icon_stories,
+                    selected = navigationManager.isCurrentDestination(
+                        newPath.orEmpty(),
+                        StoriesDestination
+                    ),
+                    destination = StoriesDestination,
+                    onClick = ::navigateToDestination
+                )
+                val favoritesButtonModel = BottomBarButtonModel(
+                    textResId = R.string.favorites_text,
+                    iconResId = R.drawable.icon_favorites,
+                    selected = navigationManager.isCurrentDestination(
+                        newPath.orEmpty(),
+                        FavoritesDestination
+                    ),
+                    destination = FavoritesDestination,
+                    onClick = ::navigateToDestination
+                )
+                _bottomBarState.value = BottomBarState(
+                    articlesButtonModel = articlesButtonModel,
+                    storiesButtonModel = storiesButtonModel,
+                    favoritesButtonModel = favoritesButtonModel,
+                )
+            }
         }
     }
 
@@ -182,7 +200,7 @@ class MainActivityViewModel @Inject constructor(
         // avoid changing navigation on recreation(i.e configuration changes)
         if (_navigationPath.value == null) {
             viewModelScope.launch(viewModelDispatchers.asyncComputationDispatcher) {
-                navigateToDestination(OnBoardingDestination())
+                navigateToDestination(OnBoardingDestination)
             }
         }
     }

@@ -5,46 +5,51 @@ import com.ofek.sample.domain.feed.FeedType
 /**
  * route - the destination navigation route
  * arguments - optional arguments adding to route
- * ancestorRoutes - the routes that should come before this destination
  */
 sealed class Destination(
     val route: String,
-    val arguments: Map<String, String> = emptyMap(),
-    val ancestors: List<String>
-)
-
-class OnBoardingDestination() : Destination(
-    route = NAVIGATION_ROUTE,
-    ancestors = emptyList()
+    val ancestors: List<String> = emptyList()
 ) {
-    companion object {
-        const val NAVIGATION_ROUTE = "onborading"
-        const val DECLARATION_ROUTE = NAVIGATION_ROUTE
+    override fun toString(): String {
+        return "Destination(" +
+                "route='$route', " +
+                "ancestors=$ancestors" +
+                ")"
     }
 }
 
-abstract class FeedDestination(
+private const val ONBOARDING_NAVIGATION_ROUTE = "onborading"
+
+object OnBoardingDestination : Destination(
+    route = ONBOARDING_NAVIGATION_ROUTE,
+) {
+    const val DECLARATION_ROUTE = ONBOARDING_NAVIGATION_ROUTE
+}
+
+sealed class FeedDestination(
     route: String,
 ) : Destination(
-    route = route,
+    route = "$FEED_TYPE_ROUTE=$route",
     ancestors = listOf(
-        OnBoardingDestination.NAVIGATION_ROUTE,
+        OnBoardingDestination.DECLARATION_ROUTE
     )
 ) {
     companion object {
-        const val FEED_TYPE_ARGUMENT_KEY: String = "feedType"
+        const val FEED_TYPE_ROUTE: String = "feedType"
+        private const val FEED_TPYE_VALUE = "type"
+        const val FEED_TYPE_ARGUMENT_DECLARATION_KEY = "$FEED_TYPE_ROUTE=$FEED_TPYE_VALUE"
         const val DECLARATION_ROUTE =
-            "${OnBoardingDestination.DECLARATION_ROUTE}/{$FEED_TYPE_ARGUMENT_KEY}"
+            "${OnBoardingDestination.DECLARATION_ROUTE}/{$FEED_TYPE_ARGUMENT_DECLARATION_KEY}"
 
-        fun feedType(feedTypeParam: String): FeedType {
-            return when (feedTypeParam) {
-                StoriesDestination.NAVIGATION_ROUTE -> {
+        fun routeToFeedType(feedTypeParam: String): FeedType {
+            return when (feedTypeParam.split('=').lastOrNull().orEmpty()) {
+                STORIES_ROUTE -> {
                     FeedType.STORIES
                 }
-                ArticlesDestination.NAVIGATION_ROUTE -> {
+                ARTICLES_ROUTE -> {
                     FeedType.ARTICLES
                 }
-                FavoritesDestination.NAVIGATION_ROUTE -> {
+                FAVORITES_ROUTE -> {
                     FeedType.FAVORITES
                 }
                 else -> {
@@ -56,42 +61,43 @@ abstract class FeedDestination(
     }
 }
 
-class StoriesDestination : FeedDestination(
-    route = NAVIGATION_ROUTE,
-) {
-    companion object {
-        const val NAVIGATION_ROUTE = "stories"
-    }
-}
+private const val STORIES_ROUTE = "stories"
 
-class ArticlesDestination : FeedDestination(
-    route = NAVIGATION_ROUTE,
-) {
-    companion object {
-        const val NAVIGATION_ROUTE = "articles"
-    }
-}
+object StoriesDestination : FeedDestination(
+    route = STORIES_ROUTE,
+)
 
-class FavoritesDestination : FeedDestination(
-    route = NAVIGATION_ROUTE,
-) {
-    companion object {
-        const val NAVIGATION_ROUTE = "favorites"
-    }
-}
+private const val ARTICLES_ROUTE = "articles"
 
-class PostDestination : Destination(
-    route = NAVIGATION_ROUTE,
+object ArticlesDestination : FeedDestination(
+    route = ARTICLES_ROUTE,
+)
+
+private const val FAVORITES_ROUTE = "favorites"
+
+object FavoritesDestination : FeedDestination(
+    route = FAVORITES_ROUTE,
+)
+
+class PostDestination(
+    postId: String = "",
+) : Destination(
+    route = "$POST_ID_ROUTE=$postId",
     ancestors = listOf(
-        OnBoardingDestination.NAVIGATION_ROUTE,
-        FeedDestination.DECLARATION_ROUTE,
+        OnBoardingDestination.DECLARATION_ROUTE,
+        FeedDestination.FEED_TYPE_ROUTE,
     )
 ) {
     companion object {
-        const val NAVIGATION_ROUTE = "post"
-        private const val POST_ID_DECLARATION_PARAM = "postId={postId}"
+        const val POST_ID_ROUTE: String = "feedType"
+        private const val POST_ID_VALUE = "id"
+        const val POST_ID_ARGUMENT_DECLARATION_KEY = "$POST_ID_ROUTE=$POST_ID_VALUE"
         const val DECLARATION_ROUTE =
-            "${FeedDestination.DECLARATION_ROUTE}/$NAVIGATION_ROUTE?$POST_ID_DECLARATION_PARAM"
+            "${FeedDestination.DECLARATION_ROUTE}/{$POST_ID_ARGUMENT_DECLARATION_KEY}"
+
+        fun getPostId(postIdParam: String?): String {
+            return postIdParam?.split('=')?.lastOrNull().orEmpty()
+        }
     }
 }
 
