@@ -7,7 +7,7 @@ import com.ofek.sample.domain.models.remote.RemoteResponseDto
 import javax.inject.Inject
 
 class FetchPostItemUseCase @Inject constructor(
-    private val repository: PostRepository,
+    private val repository: PostItemRepository,
 ) :
     BaseSuspendUseCase<FetchPostItemUseCaseParams, RemoteResponseDto<PostItemDto>>() {
 

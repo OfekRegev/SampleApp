@@ -6,7 +6,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 
 object PostItemTheme {
     val colors @Composable get() = LocalPostItemColors.current
-    val typography @Composable get() = LocalPostItemColors.current
+    val typography @Composable get() = LocalPostItemTypography.current
 }
 
 @Composable

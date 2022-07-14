@@ -7,8 +7,8 @@ import com.ofek.sample.domain.feed.FetchFeedUseCase
 import com.ofek.sample.domain.models.feed.FeedPostItemDto
 import com.ofek.sample.domain.models.remote.RemotePagingRequestDto
 import com.ofek.sample.domain.models.remote.RemoteResponseDto
-import com.ofek.sample.domain.post.AddPostToFavoritesUseCase
-import com.ofek.sample.domain.post.AddPostToFavoritesUseCaseParams
+import com.ofek.sample.domain.feed.AddPostToFavoritesUseCase
+import com.ofek.sample.domain.feed.AddPostToFavoritesUseCaseParams
 import com.ofek.sample.presentation.common.ViewModelDispatchers
 import com.ofek.sample.presentation.errors.PresentationError
 import com.ofek.sample.presentation.errors.presentationErrorFromException

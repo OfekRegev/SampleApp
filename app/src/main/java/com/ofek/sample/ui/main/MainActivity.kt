@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.ofek.sample.presentation.feed.FeedViewModel
+import com.ofek.sample.presentation.postitem.PostItemViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -14,6 +15,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var feedViewModelFactory: FeedViewModel.FeedViewModelFactory
+
+    @Inject
+    lateinit var postItemViewModelFactory: PostItemViewModel.PostItemViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +30,8 @@ class MainActivity : AppCompatActivity() {
                     viewModelStoreOwner = this,
                     lifecycleOwner = this,
                     backPressedDispatcher = onBackPressedDispatcher,
-                    feedViewModelFactory = feedViewModelFactory
+                    feedViewModelFactory = feedViewModelFactory,
+                    postItemViewModelFactory = postItemViewModelFactory
                 )
             }
         }

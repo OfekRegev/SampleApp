@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -32,11 +31,13 @@ import com.ofek.sample.presentation.main.MainActivityViewModel
 import com.ofek.sample.presentation.navigation.FeedDestination
 import com.ofek.sample.presentation.navigation.OnBoardingDestination
 import com.ofek.sample.presentation.navigation.PostDestination
+import com.ofek.sample.presentation.postitem.PostItemViewModel
 import com.ofek.sample.ui.feed.FeedRootView
 import com.ofek.sample.ui.main.bottombar.BottomBarView
 import com.ofek.sample.ui.main.theme.MainTheme
 import com.ofek.sample.ui.main.toolbar.ToolbarView
 import com.ofek.sample.ui.onboarding.OnBoardingRootView
+import com.ofek.sample.ui.postitem.PostItemView
 
 
 @Composable
@@ -45,7 +46,8 @@ fun MainActivityRootView(
     viewModelStoreOwner: ViewModelStoreOwner,
     lifecycleOwner: LifecycleOwner,
     backPressedDispatcher: OnBackPressedDispatcher,
-    feedViewModelFactory: FeedViewModel.FeedViewModelFactory
+    feedViewModelFactory: FeedViewModel.FeedViewModelFactory,
+    postItemViewModelFactory: PostItemViewModel.PostItemViewModelFactory
 ) {
     val navigationPathState = mainViewModel.getNavigationPath()
     val navController = rememberNavController()
@@ -135,7 +137,10 @@ fun MainActivityRootView(
                         CompositionLocalProvider(
                             LocalViewModelStoreOwner provides viewModelStoreOwner
                         ) {
-                            Text(text = PostDestination.getPostId(postIdParam))
+                            PostItemView(
+                                postItemId = PostDestination.getPostId(postIdParam),
+                                postItemViewModelFactory = postItemViewModelFactory
+                            )
                         }
                     }
                 }

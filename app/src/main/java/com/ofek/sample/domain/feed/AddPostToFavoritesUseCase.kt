@@ -1,10 +1,8 @@
-package com.ofek.sample.domain.post
+package com.ofek.sample.domain.feed
 
 import com.ofek.sample.domain.base.BaseSuspendUseCase
 import com.ofek.sample.domain.exceptions.InvalidUseCaseParamsException
-import com.ofek.sample.domain.feed.FeedRepository
 import com.ofek.sample.domain.models.feed.FeedPostItemDto
-import com.ofek.sample.domain.models.post.PostItemDto
 import com.ofek.sample.domain.models.remote.RemoteResponseDto
 import javax.inject.Inject
 

@@ -13,6 +13,9 @@ import com.ofek.sample.data.localdb.AppDatabase
 import com.ofek.sample.data.localdb.favorites.FavoritesPostsDao
 import com.ofek.sample.data.localdb.favorites.LocalDbFavoritesDataSource
 import com.ofek.sample.data.localdb.favorites.LocalDbFavoritesDataSourceImpl
+import com.ofek.sample.data.postitem.api.PostItemApiDataSource
+import com.ofek.sample.data.postitem.api.PostItemApiDataSourceImpl
+import com.ofek.sample.data.postitem.api.PostItemService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -65,6 +68,20 @@ object DataModule {
     }
 
     @Provides
+    fun postItemService(
+        retrofit: Retrofit
+    ): PostItemService {
+        return retrofit.create(PostItemService::class.java)
+    }
+
+    @Provides
+    fun postItemApiDataSource(
+        postItemService: PostItemService
+    ) : PostItemApiDataSource {
+        return PostItemApiDataSourceImpl(postItemService)
+    }
+
+    @Provides
     fun localDbFavoritesDataSource(
         favoritesPostsDao: FavoritesPostsDao
     ): LocalDbFavoritesDataSource {
@@ -96,4 +113,5 @@ object DataModule {
             LocalDbConstants.DATABASE_NAME
         ).build()
     }
+
 }

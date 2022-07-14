@@ -9,4 +9,7 @@
     <string name="general_error_message">General Error</string>
     <string name="network_error_message">Network Error</string>
     <string name="post_text">POST</string>
+    <string name="points">Points</string>
+    <string name="author">Author</string>
+    <string name="title">Title</string>
 </resources>

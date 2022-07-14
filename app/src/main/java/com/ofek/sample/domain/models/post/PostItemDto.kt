@@ -5,6 +5,4 @@ data class PostItemDto(
     val points: Int = 0,
     val title: String = "",
     val author: String = "",
-    val views: Int = 0,
-    val favorite: Boolean? = null,
 )

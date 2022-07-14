@@ -6,7 +6,6 @@ fun mapPostItemDtoToPostItemModel(postItemDto: PostItemDto): UiPostItemModel {
     return UiPostItemModel(
         title = postItemDto.title,
         author = postItemDto.author,
-        viewsCount = postItemDto.views,
         points = postItemDto.points,
     )
 }
