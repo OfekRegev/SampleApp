@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ofek.sample.domain.feed.FeedType
-import com.ofek.sample.presentation.errors.Error
+import com.ofek.sample.presentation.errors.PresentationError
 import com.ofek.sample.presentation.feed.FeedViewModel
 import com.ofek.sample.ui.feed.postlist.PostListView
 import com.ofek.sample.ui.feed.theme.FeedTheme
@@ -51,7 +51,7 @@ fun FeedRootView(
 
 @Composable
 fun ErrorHandler(
-    errorState: State<Error?>
+    errorState: State<PresentationError?>
 ) {
     val context = LocalContext.current
     val error by remember {

@@ -7,5 +7,10 @@ import com.ofek.sample.domain.models.remote.RemoteResponseDto
 
 interface FeedRepository {
     @Throws(Exception::class)
-    suspend fun fetchFeed(remotePagingRequest: RemotePagingRequestDto, feedType: FeedType): RemoteResponseDto<RemotePagingResponseDto<List<FeedPostItemDto>>>
+    suspend fun fetchFeed(
+        remotePagingRequest: RemotePagingRequestDto,
+        feedType: FeedType
+    ): RemoteResponseDto<RemotePagingResponseDto<List<FeedPostItemDto>>>
+
+    suspend fun addPostToFavorites(post: FeedPostItemDto): RemoteResponseDto<FeedPostItemDto>
 }

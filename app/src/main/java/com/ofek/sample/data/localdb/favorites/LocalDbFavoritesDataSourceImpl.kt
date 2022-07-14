@@ -2,9 +2,8 @@ package com.ofek.sample.data.localdb.favorites
 
 import com.ofek.sample.data.localdb.models.mapLocalDbPostToFeedPostItemDto
 import com.ofek.sample.data.localdb.models.mapLocalDbPostToPostItemDto
-import com.ofek.sample.data.localdb.models.mapPostItemDtoToLocalDbPost
+import com.ofek.sample.data.localdb.models.mapFeedPostItemDtoToLocalDbPost
 import com.ofek.sample.domain.models.feed.FeedPostItemDto
-import com.ofek.sample.domain.models.post.PostItemDto
 
 class LocalDbFavoritesDataSourceImpl(
     private val dao: FavoritesPostsDao,
@@ -20,17 +19,22 @@ class LocalDbFavoritesDataSourceImpl(
         }
     }
 
-    override suspend fun saveItem(postItemDto: PostItemDto) {
-        val dbItem = mapPostItemDtoToLocalDbPost(postItemDto)
+    override suspend fun saveItem(postItemDto: FeedPostItemDto) {
+        val dbItem = mapFeedPostItemDtoToLocalDbPost(postItemDto)
         dao.insertPostItem(dbItem)
     }
 
-    override suspend fun getItem(postId: String): PostItemDto? {
+    override suspend fun getItem(postId: String): FeedPostItemDto? {
         return if (isPostInDatabase(postId)) {
             mapLocalDbPostToPostItemDto(dao.getPost(postId))
         } else {
             null
         }
+    }
+
+    override suspend fun updateItem(postItemDto: FeedPostItemDto) {
+        val dbItem = mapFeedPostItemDtoToLocalDbPost(postItemDto)
+        dao.updateItem(dbItem)
     }
 
 

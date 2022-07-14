@@ -1,16 +1,17 @@
 package com.ofek.sample.presentation.feed
 
+import android.util.Log
 import androidx.lifecycle.*
-import com.ofek.sample.data.exceptions.ApiException
-import com.ofek.sample.data.exceptions.NetworkUnavailableException
 import com.ofek.sample.domain.feed.FeedType
 import com.ofek.sample.domain.feed.FetchFeedUseCase
+import com.ofek.sample.domain.models.feed.FeedPostItemDto
 import com.ofek.sample.domain.models.remote.RemotePagingRequestDto
 import com.ofek.sample.domain.models.remote.RemoteResponseDto
+import com.ofek.sample.domain.post.AddPostToFavoritesUseCase
+import com.ofek.sample.domain.post.AddPostToFavoritesUseCaseParams
 import com.ofek.sample.presentation.common.ViewModelDispatchers
-import com.ofek.sample.presentation.errors.Error
-import com.ofek.sample.presentation.errors.GeneralError
-import com.ofek.sample.presentation.errors.NetworkError
+import com.ofek.sample.presentation.errors.PresentationError
+import com.ofek.sample.presentation.errors.presentationErrorFromException
 import com.ofek.sample.presentation.feed.models.mapFeedPostItemDtoToUiPostListItemModel
 import com.ofek.sample.presentation.navigation.NavigationManager
 import com.ofek.sample.presentation.navigation.PostDestination
@@ -20,19 +21,16 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.UnknownHostException
 
 class FeedViewModel @AssistedInject constructor(
     private val fetchFeedUseCase: FetchFeedUseCase,
     private val viewModelDispatchers: ViewModelDispatchers,
     private val navigationManager: NavigationManager,
+    private val addPostToFavorites: AddPostToFavoritesUseCase,
     @Assisted private val feedType: FeedType,
 ) : ViewModel() {
 
-
     companion object {
-
-
         fun provideFactory(
             assistedFactory: FeedViewModelFactory,
             feedType: FeedType,
@@ -49,12 +47,12 @@ class FeedViewModel @AssistedInject constructor(
     }
 
 
-    private val _errorLiveData = MutableLiveData<Error?>(null)
+    private val _errorLiveData = MutableLiveData<PresentationError?>(null)
     private val _feedStateLiveData = MutableLiveData(FeedState())
     private var fetchingJob: Job? = null
     fun feedState(): LiveData<FeedState> = _feedStateLiveData
 
-    fun getErrorState(): LiveData<Error?> = _errorLiveData
+    fun getErrorState(): LiveData<PresentationError?> = _errorLiveData
 
     fun onScreenCreated() {
         val currentState = _feedStateLiveData.value
@@ -98,7 +96,13 @@ class FeedViewModel @AssistedInject constructor(
             when (responseDto) {
                 is RemoteResponseDto.Success -> {
                     val items = responseDto.content.items.map {
-                        mapFeedPostItemDtoToUiPostListItemModel(it, ::onPostItemClicked)
+                        mapFeedPostItemDtoToUiPostListItemModel(
+                            it,
+                            onClick = {
+                                onPostItemClicked(it)
+                            },
+                            feedType = feedType
+                        )
                     }
                     val newItemsList = if (refresh) {
                         items
@@ -118,16 +122,13 @@ class FeedViewModel @AssistedInject constructor(
                 }
                 is RemoteResponseDto.Error -> {
                     withContext(viewModelDispatchers.mainDispatcher) {
-                        if (responseDto.exception is NetworkUnavailableException ||
-                            responseDto.exception is ApiException || responseDto.exception is UnknownHostException
-                        ) {
-                            _errorLiveData.value = NetworkError
-                            _feedStateLiveData.value = currentState?.copy(
-                                isLoading = false
-                            )
-                        } else {
-                            _errorLiveData.value = GeneralError
-                        }
+                        Log.e("feed", responseDto.exception.stackTraceToString())
+                        val error =
+                            presentationErrorFromException(exception = responseDto.exception)
+                        _errorLiveData.value = error
+                        _feedStateLiveData.value = currentState?.copy(
+                            isLoading = false
+                        )
                     }
                 }
             }
@@ -135,8 +136,52 @@ class FeedViewModel @AssistedInject constructor(
         fetchingJob = job
     }
 
-    private fun onPostItemClicked(postId: String) {
-        navigationManager.navigateTo(PostDestination(postId))
+    private fun onPostItemClicked(post: FeedPostItemDto) {
+        viewModelScope.launch(context = viewModelDispatchers.asyncIoDispatcher) {
+            val response = addPostToFavorites(
+                AddPostToFavoritesUseCaseParams(post)
+            )
+            // updating the post item as it might changed - i.e number of views changed
+            when (response) {
+                is RemoteResponseDto.Error -> {
+                    withContext(viewModelDispatchers.mainDispatcher) {
+                        _errorLiveData.value = presentationErrorFromException(response.exception)
+                    }
+                }
+                is RemoteResponseDto.Success -> {
+                    updatePostItem(response.content)
+                }
+            }
+        }
+        viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
+            navigationManager.navigateTo(PostDestination(post.postId))
+        }
+    }
+
+    private fun updatePostItem(updatedPostItem: FeedPostItemDto) {
+        val postItem = mapFeedPostItemDtoToUiPostListItemModel(
+            updatedPostItem,
+            onClick = {
+                onPostItemClicked(updatedPostItem)
+            },
+            feedType = feedType
+        )
+        viewModelScope.launch(context = viewModelDispatchers.asyncComputationDispatcher) {
+            val currentItems = _feedStateLiveData.value?.items
+            val updatedList = currentItems?.toMutableList()
+            updatedList?.replaceAll {
+                if (it.itemId == postItem.itemId) {
+                    postItem
+                } else {
+                    it
+                }
+            }
+            withContext(viewModelDispatchers.mainDispatcher) {
+                _feedStateLiveData.value = _feedStateLiveData.value?.copy(
+                    items = updatedList.orEmpty()
+                )
+            }
+        }
     }
 
     fun refresh() {

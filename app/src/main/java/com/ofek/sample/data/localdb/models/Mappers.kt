@@ -1,7 +1,6 @@
 package com.ofek.sample.data.localdb.models
 
 import com.ofek.sample.domain.models.feed.FeedPostItemDto
-import com.ofek.sample.domain.models.post.PostItemDto
 
 fun mapLocalDbPostToFeedPostItemDto(
     localDbPost: LocalDbPost
@@ -17,25 +16,23 @@ fun mapLocalDbPostToFeedPostItemDto(
 
 fun mapLocalDbPostToPostItemDto(
     localDbPost: LocalDbPost
-): PostItemDto {
-    return PostItemDto(
+): FeedPostItemDto {
+    return FeedPostItemDto(
         localDbPost.postId,
         localDbPost.points,
         localDbPost.title,
-        localDbPost.author,
         localDbPost.views,
         true
     )
 }
 
-fun mapPostItemDtoToLocalDbPost(
-    postItemDto: PostItemDto
+fun mapFeedPostItemDtoToLocalDbPost(
+    postItemDto: FeedPostItemDto
 ): LocalDbPost {
     return LocalDbPost(
         postId = postItemDto.postId,
         title = postItemDto.title,
         points = postItemDto.points,
         views = postItemDto.views,
-        author = postItemDto.author
     )
 }

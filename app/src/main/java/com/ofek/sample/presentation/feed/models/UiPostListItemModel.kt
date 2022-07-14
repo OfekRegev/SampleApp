@@ -5,5 +5,5 @@ class UiPostListItemModel(
     val title: String,
     val counterText: String,
     val favorite: Boolean,
-    val onClick: (id: String) -> Unit,
+    val onClick: () -> Unit,
 )

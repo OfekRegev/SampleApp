@@ -89,7 +89,7 @@ class PostDestination(
     )
 ) {
     companion object {
-        const val POST_ID_ROUTE: String = "feedType"
+        const val POST_ID_ROUTE: String = "post"
         private const val POST_ID_VALUE = "id"
         const val POST_ID_ARGUMENT_DECLARATION_KEY = "$POST_ID_ROUTE=$POST_ID_VALUE"
         const val DECLARATION_ROUTE =

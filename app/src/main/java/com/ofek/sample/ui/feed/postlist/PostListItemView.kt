@@ -35,7 +35,7 @@ fun PostListItem(
             interactionSource = MutableInteractionSource(),
             indication = null,
         ) {
-            model.onClick.invoke(model.itemId)
+            model.onClick.invoke()
         }
     ) {
         Row(

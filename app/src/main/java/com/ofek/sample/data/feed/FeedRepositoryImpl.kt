@@ -36,6 +36,28 @@ class FeedRepositoryImpl(
         }
     }
 
+    override suspend fun addPostToFavorites(post: FeedPostItemDto): RemoteResponseDto<FeedPostItemDto> {
+        return if (localDbDataSource.isPostInDatabase(post.postId)) {
+            val currentPost = localDbDataSource.getItem(post.postId)
+            currentPost?.let {
+                val updatedPost = currentPost.copy(
+                    views = currentPost.views + 1
+                )
+                localDbDataSource.updateItem(
+                    updatedPost
+                )
+                RemoteResponseDto.Success(updatedPost)
+            } ?: RemoteResponseDto.Error(IllegalStateException("database error"))
+        } else {
+            val updatedItem = post.copy(
+                views = post.views + 1,
+                favorite = true
+            )
+            localDbDataSource.saveItem(updatedItem)
+            RemoteResponseDto.Success(updatedItem)
+        }
+    }
+
     private suspend fun fetchFeedFromLocalDb(
         remotePagingRequest: RemotePagingRequestDto,
     ): RemoteResponseDto<RemotePagingResponseDto<List<FeedPostItemDto>>> {
