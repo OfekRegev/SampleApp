@@ -74,17 +74,36 @@ class Navigator : NavigationManager {
             }
             newPathBuilder.append('/')
         }
-        newPathBuilder.append(destination.route)
+        newPathBuilder.append(buildFullRouteForDestination(destination))
         return newPathBuilder.toString()
     }
 
     /**
      * Checking whether the current destination matches the argument destination.
-     * using route.startsWith() because path might contains unknown params, i.e - destination?param=value
      */
     override fun isCurrentDestination(path: String, destination: Destination): Boolean {
         val pathSplit = path.split('/')
         val lastRoute = pathSplit.lastOrNull()
-        return lastRoute.orEmpty().startsWith(destination.route)
+        val destinationRoute = buildFullRouteForDestination(destination)
+        //using lastRoute.startsWith() because path might contains unknown params, i.e - post?postId=unknownId
+        return lastRoute.orEmpty().startsWith(destinationRoute)
+    }
+
+    private fun buildFullRouteForDestination(destination: Destination): String {
+        val routeBuilder = StringBuilder()
+        routeBuilder.append(destination.route)
+        if (destination.arguments.isNotEmpty()) {
+            routeBuilder.append("?")
+            val arguments = destination.arguments.entries
+            // adding arguments to the current route
+            arguments.forEachIndexed { index, argument ->
+                routeBuilder.append("${argument.key}=${argument.value}")
+                // following the compose navigation scheme the last argument should not be escaped with '&'
+                if (index < arguments.size - 1) {
+                    routeBuilder.append("&")
+                }
+            }
+        }
+        return routeBuilder.toString()
     }
 }

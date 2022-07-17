@@ -27,8 +27,6 @@ e
 5app/src/main/java/com/ofek/sample/ui/widgets/Sizes.kt,4/0/402983024c5a60c922028cb9577d4ebcc1b18679
 p
 @app/src/main/java/com/ofek/sample/ui/main/toolbar/ToolbarView.kt,6/a/6a7a3e07729d04d17a35685edfe4ef960a04d87f
-~
-Napp/src/main/java/com/ofek/sample/presentation/navigation/NavigationManager.kt,b/1/b1365ae7ca359a2d1ff8fe69fb0f407ace8b78c2
 h
 8app/src/main/java/com/ofek/sample/ui/onboarding/Sizes.kt,3/5/3597fd4c533545a0a793bd58ed5cd641422298e2
 t
@@ -97,8 +95,6 @@ Napp/src/main/java/com/ofek/sample/ui/feed/postlist/theme/PostListItemColors.kt
 Rapp/src/main/java/com/ofek/sample/ui/feed/postlist/theme/PostListItemTypography.kt,7/b/7bc96484572b250fd065e84e362e01d8c4b46bd7
 Å
 Qapp/src/main/java/com/ofek/sample/domain/models/remote/RemotePagingResponseDto.kt,c/c/ccbe468809994fa059f77a35e834d9f78e2abd09
-x
-Happ/src/main/java/com/ofek/sample/presentation/feed/ArticlesViewState.kt,0/4/04d1bf661985ea0a62d42f1c191688778fad9ad6
 {
 Kapp/src/main/java/com/ofek/sample/domain/models/remote/RemoteResponseDto.kt,7/7/77849cf2c7456f9fdc30d42f2165516e8555ee64
 Ä
@@ -121,8 +117,6 @@ Aapp/src/main/java/com/ofek/sample/domain/feed/FetchFeedUseCase.kt,3/8/38ed7d28
 Mapp/src/main/java/com/ofek/sample/presentation/common/ViewModelDispatchers.kt,6/3/639f82f7173b71589d8bbf200988cedebb175c3f
 p
 @app/src/main/java/com/ofek/sample/di/PresentationCommonModule.kt,0/8/0852d3f95ef1e44fcf1d5f7e762a11bd626ed327
-v
-Fapp/src/main/java/com/ofek/sample/presentation/navigation/Navigator.kt,6/7/6766c0e901f7e1819ffc2790c49c42256b0c9030
 {
 Kapp/src/main/java/com/ofek/sample/presentation/main/toolbar/ToolbarState.kt,4/a/4a9da756eb9f1be6c38bc28d623e7b3ef6cf4087
 f
@@ -147,12 +141,8 @@ Qapp/src/main/java/com/ofek/sample/presentation/feed/models/UiPostListItemModel.
 Vapp/src/main/java/com/ofek/sample/data/localdb/favorites/LocalDbFavoritesDataSource.kt,d/4/d42e60bf4cced9e2341b4c8c110e9876f6a3262f
 }
 Mapp/src/main/java/com/ofek/sample/data/localdb/favorites/FavoritesPostsDao.kt,e/2/e27b9516742c7eb54d135ac77b7ea23ebbc55c18
-y
-Iapp/src/main/java/com/ofek/sample/presentation/navigation/Destinations.kt,1/b/1bafd94f8dd012731d79f4c87fbfb9aab1c0bb9e
 ä
 Zapp/src/main/java/com/ofek/sample/data/localdb/favorites/LocalDbFavoritesDataSourceImpl.kt,d/c/dcac515f901ec226df2ec660f888a41330c3c055
-|
-Lapp/src/main/java/com/ofek/sample/presentation/main/MainActivityViewModel.kt,9/7/97bb680e22bf372b73a14510a007b72cac1b6c6c
 x
 Happ/src/main/java/com/ofek/sample/data/feed/api/FeedApiDataSourceImpl.kt,2/0/20e0c91a76490bd54a0e5205f47c1ed66919a15c
 u
@@ -189,9 +179,9 @@ j
 :app/src/main/java/com/ofek/sample/di/RepositoriesModule.kt,c/f/cf388e7566ee95c758eed6040c6d799e08605760
 y
 Iapp/src/main/java/com/ofek/sample/presentation/postitem/models/Mappers.kt,a/7/a7e9d46224b274b7ba0e59d8bb0497d884390706
-i
-9app/src/main/java/com/ofek/sample/ui/main/MainRootView.kt,d/b/db039fabc215391f2a21bb5c1f7680893bbb307d
 Ñ
 Tapp/src/main/java/com/ofek/sample/domain/exceptions/InvalidUseCaseParamsException.kt,9/6/96c33015f08243d7ea568819dfa25a87bffd0681
 l
 <app/src/main/java/com/ofek/sample/ui/widgets/ErrorHandler.kt,a/7/a79cff6e5c64180fb2b8e162fad5c9d65e374b6e
+v
+Fapp/src/main/java/com/ofek/sample/ui/feed/postlist/PostListItemView.kt,f/d/fda2fb232e14a55889592e8e88cf42fecae0a25d

@@ -106,13 +106,13 @@ fun MainActivityRootView(
                     composable(
                         route = FeedDestination.DECLARATION_ROUTE,
                         arguments = listOf(
-                            navArgument(FeedDestination.FEED_TYPE_ARGUMENT_DECLARATION_KEY) {
+                            navArgument(FeedDestination.FEED_TYPE_VALUE) {
                                 type = NavType.StringType
                             }
                         )
                     ) {
                         val feedTypeParam =
-                            it.arguments?.getString(FeedDestination.FEED_TYPE_ARGUMENT_DECLARATION_KEY)
+                            it.arguments?.getString(FeedDestination.FEED_TYPE_VALUE)
                                 .orEmpty()
                         CompositionLocalProvider(
                             LocalViewModelStoreOwner provides viewModelStoreOwner
@@ -126,19 +126,19 @@ fun MainActivityRootView(
                     composable(
                         route = PostDestination.DECLARATION_ROUTE,
                         arguments = listOf(
-                            navArgument(PostDestination.POST_ID_ARGUMENT_DECLARATION_KEY) {
+                            navArgument(PostDestination.POST_ID_VALUE) {
                                 type = NavType.StringType
                             }
                         )
                     ) {
                         val postIdParam =
-                            it.arguments?.getString(PostDestination.POST_ID_ARGUMENT_DECLARATION_KEY)
+                            it.arguments?.getString(PostDestination.POST_ID_VALUE)
                                 .orEmpty()
                         CompositionLocalProvider(
                             LocalViewModelStoreOwner provides viewModelStoreOwner
                         ) {
                             PostItemView(
-                                postItemId = PostDestination.getPostId(postIdParam),
+                                postItemId = postIdParam,
                                 postItemViewModelFactory = postItemViewModelFactory
                             )
                         }
