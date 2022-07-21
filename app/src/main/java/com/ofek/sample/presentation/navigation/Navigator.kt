@@ -61,7 +61,7 @@ class Navigator : NavigationManager {
         // for example navigation from onboarding/articles to stories would be a replacement - i.e onboarding/stories, and not appending i.e onboarding/articles/stories
         destination.ancestors.forEachIndexed { index, ancestor ->
             if (index < pathSplit.size && pathSplit[index].startsWith(ancestor)) {
-                // taking the route from current path as ancestor could be dynamic - i.e ancestor1/{ancestor2}/destination
+                // taking the route from current path as ancestor could be dynamic - i.e ancestor1/ancestor2?arg=value/destination
                 newPathBuilder.append(pathSplit[index])
             } else {
                 // this is an edge case, this is normally cannot happen under any circumstances, only when the destinations didn't set up ancestors correctly

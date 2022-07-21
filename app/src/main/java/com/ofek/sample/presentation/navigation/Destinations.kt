@@ -5,6 +5,7 @@ import com.ofek.sample.domain.feed.FeedType
 /**
  * route - the destination navigation route
  * arguments - optional arguments adding to route
+ * ancestors - destinations that comes before this destination in the nav graph
  */
 sealed class Destination(
     val route: String,
@@ -12,11 +13,9 @@ sealed class Destination(
     val ancestors: List<String> = emptyList()
 ) {
     override fun toString(): String {
-        return "Destination(" +
-                "route='$route', " +
-                "ancestors=$ancestors" +
-                ")"
+        return "Destination(route='$route', arguments=$arguments, ancestors=$ancestors)"
     }
+
 }
 
 private const val ONBOARDING_NAVIGATION_ROUTE = "onborading"
@@ -42,12 +41,12 @@ sealed class FeedDestination(
         const val FEED_TYPE_ROUTE: String = "feed"
         const val FEED_TYPE_VALUE = "value"
         const val FEED_TYPE_KEY = "type"
-        const val FEED_DECLARATION_ROUTE =
+        private const val FEED_DECLARATION_ROUTE =
             "$FEED_TYPE_ROUTE?$FEED_TYPE_KEY={$FEED_TYPE_VALUE}"
         const val DECLARATION_ROUTE =
             "${OnBoardingDestination.DECLARATION_ROUTE}/$FEED_DECLARATION_ROUTE"
 
-        fun routeToFeedType(feedTypeParam: String): FeedType {
+        fun feedTypeFromParam(feedTypeParam: String): FeedType {
             return when (feedTypeParam) {
                 STORIES_ROUTE -> {
                     FeedType.STORIES
@@ -101,7 +100,8 @@ class PostDestination(
         const val POST_ID_ROUTE: String = "post"
         private const val POST_ID_KEY = "postId"
         const val POST_ID_VALUE = "id"
-        const val POST_ID_ARGUMENT_DECLARATION_KEY = "$POST_ID_ROUTE?$POST_ID_KEY={$POST_ID_VALUE}"
+        private const val POST_ID_ARGUMENT_DECLARATION_KEY =
+            "$POST_ID_ROUTE?$POST_ID_KEY={$POST_ID_VALUE}"
         const val DECLARATION_ROUTE =
             "${FeedDestination.DECLARATION_ROUTE}/$POST_ID_ARGUMENT_DECLARATION_KEY"
 

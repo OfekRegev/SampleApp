@@ -119,7 +119,7 @@ fun MainActivityRootView(
                         ) {
                             FeedRootView(
                                 factory = feedViewModelFactory,
-                                FeedDestination.routeToFeedType(feedTypeParam)
+                                FeedDestination.feedTypeFromParam(feedTypeParam)
                             )
                         }
                     }
